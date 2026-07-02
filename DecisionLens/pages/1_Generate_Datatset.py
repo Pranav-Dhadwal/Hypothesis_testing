@@ -90,7 +90,7 @@ if st.button("Generate Dataset"):
 
     # Save to CSV
     df.to_csv(
-        "datacustomer_behavior.csv",
+        data_path,
         index=False
     )
 
