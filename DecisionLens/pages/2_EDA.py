@@ -1,3 +1,4 @@
+# imports 
 import os
 import streamlit as st
 import numpy as np
@@ -5,10 +6,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Title 
 st.title("📈 Exploratory Data Analysis")
 
 st.markdown("---")
 
+# data path 
 data_path = os.path.join('./', 'data', 'raw', 'simulated_data.csv' )
 
 if "dataset" in st.session_state:
@@ -16,6 +19,7 @@ if "dataset" in st.session_state:
 else:
     data = pd.read_csv(data_path)
 
+# Starting EDA : Basic
 st.markdown("#### Data Overview")
 st.dataframe(data.head(5))
 
@@ -35,7 +39,7 @@ with col1:
 with col2:
     st.metric(label='Duplicated Values', value=data.duplicated().sum())
 
-
+# Availabe column and type check 
 with st.expander("Check Columns"):
     data_type_summary = {
         'Column Name' : list(),
@@ -48,6 +52,7 @@ with st.expander("Check Columns"):
 
     st.dataframe(data_type_summary)
 
+# Summary of numerical columns 
 with st.expander("Statistic Summary"):
 
     num_cols = data.select_dtypes(include='number').columns.drop(['customer_id', 'purchase_prob'])
@@ -64,6 +69,7 @@ with st.expander("Statistic Summary"):
 
     st.dataframe(statistic_summary)
 
+# Summary of categorical column
 def cat_summary(df, col):
 
     value_counts = df[col].value_counts()
@@ -97,3 +103,30 @@ with st.expander("Categorical Summary"):
         st.dataframe(summary["Summary"])
 
 st.markdown("---")
+
+st.markdown("## 📌 Key Observations")
+
+st.success("""
+**✔ Data Quality**
+- No missing values or duplicate records were detected.
+- The dataset is complete and ready for further analysis.
+""")
+
+st.info("""
+**👥 Customer Profile**
+- Female customers form the largest customer segment.
+- India contributes the highest share of customers.
+""")
+
+st.info("""
+**📱 Customer Behaviour**
+- Mobile is the preferred browsing device.
+- Organic traffic is the primary acquisition channel.
+- Customers spend around 3 minutes per session and typically explore 2–3 products.
+""")
+
+st.warning("""
+**💡 Business Insight**
+- The dataset contains both new and returning customers, providing a realistic mix of purchasing behaviour.
+- Variation in browsing and purchase history makes the data suitable for customer segmentation and A/B hypothesis testing.
+""")
