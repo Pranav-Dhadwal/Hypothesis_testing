@@ -104,29 +104,44 @@ with st.expander("Categorical Summary"):
 
 st.markdown("---")
 
+# Key observations 
 st.markdown("## 📌 Key Observations")
+missing = data.isna().sum().sum()
+duplicates = data.duplicated().sum()
 
-st.success("""
-**✔ Data Quality**
-- No missing values or duplicate records were detected.
-- The dataset is complete and ready for further analysis.
-""")
+if missing == 0 and duplicates == 0:
+    quality = "No missing values or duplicate records were detected."
+else:
+    quality = (
+        f"The dataset contains **{missing}** missing values "
+        f"and **{duplicates}** duplicate records."
+    )
+duplicates = data.duplicated().sum()
+top_country = data["country"].mode()[0]
+top_gender = data["gender"].mode()[0]
+top_device = data["device"].mode()[0]
+top_source = data["traffic_source"].mode()[0]
+avg_session = data["session_duration"].mean()
+avg_pages = data["pages_viewed"].mean()
 
-st.info("""
-**👥 Customer Profile**
-- Female customers form the largest customer segment.
-- India contributes the highest share of customers.
-""")
+st.success(f"""
+### Data Quality
 
-st.info("""
-**📱 Customer Behaviour**
-- Mobile is the preferred browsing device.
-- Organic traffic is the primary acquisition channel.
-- Customers spend around 3 minutes per session and typically explore 2–3 products.
-""")
+- {quality}
 
-st.warning("""
-**💡 Business Insight**
-- The dataset contains both new and returning customers, providing a realistic mix of purchasing behaviour.
-- Variation in browsing and purchase history makes the data suitable for customer segmentation and A/B hypothesis testing.
+### 👥 Customer Profile
+
+- **{top_gender}** customers form the largest customer segment.
+- **{top_country}** contributes the highest share of customers.
+
+### 📱 Customer Behaviour
+
+- **{top_device}** is the preferred browsing device.
+- **{top_source}** is the primary acquisition channel.
+- Customers spend **{avg_session:.1f} minutes** per session and view **{avg_pages:.1f} pages** on average.
+
+### 💡 Business Insight
+
+- The dataset contains both new and returning customers.
+- Customer behaviour varies enough to support segmentation and A/B hypothesis testing.
 """)
