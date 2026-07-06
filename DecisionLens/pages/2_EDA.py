@@ -12,7 +12,11 @@ st.title("📈 Exploratory Data Analysis")
 st.markdown("---")
 
 # data path 
-data_path = os.path.join('./', 'data', 'raw', 'simulated_data.csv' )
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, 'data', 'raw')
+os.makedirs(DATA_DIR, exist_ok=True)
+
+data_path = os.path.join(DATA_DIR, 'simulated_data.csv')
 
 if "dataset" in st.session_state:
     data = st.session_state["dataset"]

@@ -4,13 +4,18 @@ import streamlit as st
 from src.visualization import *
 
 # Data file import 
-path = os.path.join("./","data","raw","simulated_data.csv")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, 'data', 'raw')
+os.makedirs(DATA_DIR, exist_ok=True)
+
+data_path = os.path.join(DATA_DIR, 'simulated_data.csv')
 
 if "dataset" in st.session_state:
     data = st.session_state["dataset"]
 else:
-    data = pd.read_csv(path)
+    data = pd.read_csv(data_path)
 
+# Getting num cols and cat cols
 numeric_cols = data.select_dtypes(include="number").drop(columns='customer_id').columns.tolist()
 categorical_cols = data.select_dtypes(include="object").columns.tolist()
 
