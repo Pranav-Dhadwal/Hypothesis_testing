@@ -23,26 +23,70 @@ def generate_customer_data(n_rows: int, purchase_lift: float):
         p=[0.40, 0.20, 0.12, 0.10, 0.10, 0.08]
     ) 
 
-    # Device
-    device = np.random.choice(
-        ["Mobile", "Desktop", "Other"],
-        size=n_rows,
-        p=[0.6, 0.15, 0.25]
-    )
+    # traffic source 
+    traffic_prob = {
+    "India":    [0.30,0.45,0.15,0.10],
+    "USA":      [0.50,0.20,0.20,0.10],
+    "UK":       [0.45,0.25,0.20,0.10],
+    "Germany":  [0.40,0.25,0.25,0.10],
+    "Canada":   [0.45,0.20,0.25,0.10],
+    "Australia":[0.42,0.23,0.25,0.10]
+    }
 
+    traffic_source = [
+        np.random.choice(
+            ["Organic","Ads","Email","Social"],
+            p=traffic_prob[c]
+        )
+        for c in country
+    ]
+
+    # Device prob so it depends on country 
+    device_prob = {
+        "India":    [0.75, 0.15, 0.10],
+        "USA":      [0.45, 0.45, 0.10],
+        "UK":       [0.55, 0.35, 0.10],
+        "Germany":  [0.50, 0.40, 0.10],
+        "Canada":   [0.50, 0.40, 0.10],
+        "Australia":[0.55, 0.35, 0.10]
+    }
+
+    # device
+    device = [
+        np.random.choice(
+            ["Mobile","Desktop","Other"],
+            p=device_prob[c]
+        )
+        for c in country
+    ]
     # Session duration (minutes)
     session_duration = np.random.normal(10, 2, n_rows)
 
-    # Younger users browse slightly longer
+    # Younger and female users browse slightly longer
     session_duration += np.where(age < 30, 3, 0)
+
+    session_duration *= np.where(
+        gender == "Female",
+        1.12,
+        1.00
+    )
 
     session_duration = np.clip(session_duration, 1, None)
 
-    # Pages viewed depends on session duration
+    # Session duration influences browsing
     pages_viewed = (
         session_duration *
         np.random.uniform(1.5, 2.5, n_rows)
     ).astype(int)
+
+    # Slightly higher engagement for female customers
+    pages_viewed += np.where(
+        gender == "Female",
+        np.random.binomial(1, 0.6, n_rows),
+        0
+    )
+
+    pages_viewed = np.clip(pages_viewed, 1, None)
 
     # Previous orders
     previous_orders = np.random.poisson(2, n_rows)
@@ -84,6 +128,8 @@ def generate_customer_data(n_rows: int, purchase_lift: float):
         "country": country,
 
         "device": device,
+
+        "traffic_source" : traffic_source,
 
         "session_duration": session_duration.round(2),
 
