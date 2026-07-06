@@ -11,10 +11,17 @@ def generate_customer_data(n_rows: int, purchase_lift: float):
     age = np.random.randint(18, 65, n_rows)
 
     gender = np.random.choice(
-    ['Male', 'Female'],
-    size=n_rows,
-    p=[0.45, 0.55]
+        ['Male', 'Female'],
+        size=n_rows,
+        p=[0.45, 0.55]
     )
+
+    # Country
+    country = np.random.choice(
+        ["India", "USA", "UK", "Germany", "Canada", "Australia"],
+        size=n_rows,
+        p=[0.40, 0.20, 0.12, 0.10, 0.10, 0.08]
+    ) 
 
     # Device
     device = np.random.choice(
@@ -73,6 +80,8 @@ def generate_customer_data(n_rows: int, purchase_lift: float):
         "age": age,
 
         "gender": gender,
+
+        "country": country,
 
         "device": device,
 
